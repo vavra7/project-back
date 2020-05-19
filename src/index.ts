@@ -8,12 +8,14 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import { redis } from "./redis";
 import cors from "cors";
+import { LoginResolver } from "./modules/user/Login";
+import { MeResolver } from "./modules/user/Me";
 
 const main = async () => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [RegisterResolver],
+    resolvers: [RegisterResolver, LoginResolver, MeResolver],
   });
   const apolloServer = new ApolloServer({
     schema,

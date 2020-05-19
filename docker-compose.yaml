@@ -9,9 +9,16 @@ services:
       POSTGRES_USER: user
       POSTGRES_DB: project-back
     volumes:
-      # - type: bind
-      #   source: ./db-data
-      #   target: /var/lib/postgres/data
-      - ./db-data:/var/lib/postgres/data
+      - type: volume
+        source: postgres-data
+        target: /var/lib/postgres/data
     ports:
       - "5432:5432"
+
+  redis:
+    image: redis:6
+    container_name: project-back_redis
+
+volumes:
+  postgres-data:
+  

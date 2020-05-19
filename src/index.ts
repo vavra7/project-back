@@ -10,6 +10,7 @@ import { redis } from "./redis";
 import cors from "cors";
 import { LoginResolver } from "./modules/user/Login";
 import { MeResolver } from "./modules/user/Me";
+import { sendEmail } from "./modules/utils/sendEmail";
 
 const main = async () => {
   await createConnection();

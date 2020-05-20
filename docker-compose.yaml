@@ -2,25 +2,21 @@ version: "3.7"
 
 services:
   db:
-    image: postgres:12
     container_name: project-back_postgres
+    image: postgres:12
     environment:
-      POSTGRES_PASSWORD: pass
-      POSTGRES_USER: user
-      POSTGRES_DB: project-back
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_MULTIPLE_DATABASES: project_back, project_back_test
     volumes:
-      - type: volume
-        source: postgres-data
-        target: /var/lib/postgres/data
+      - type: bind
+        source: ./db-data
+        target: /docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
 
   redis:
-    image: redis:6
     container_name: project-back_redis
+    image: redis:6
     ports:
       - "6379:6379"
-
-volumes:
-  postgres-data:
-  

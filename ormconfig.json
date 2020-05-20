@@ -5,7 +5,7 @@
   "port": 5432,
   "username": "user",
   "password": "pass",
-  "database": "project-back",
+  "database": "project_back",
   "synchronize": true,
   "logging": true,
   "entities": ["src/entity/*.*"]

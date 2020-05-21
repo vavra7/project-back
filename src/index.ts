@@ -1,12 +1,13 @@
-import "reflect-metadata";
-import { ApolloServer } from "apollo-server-express";
-import Express from "express";
-import { createConnection } from "typeorm";
-import session from "express-session";
-import connectRedis from "connect-redis";
-import { redis } from "./redis";
-import cors from "cors";
-import { createSchema } from "./utils/createSchema";
+import 'reflect-metadata';
+import { ApolloServer } from 'apollo-server-express';
+import Express from 'express';
+import { createConnection } from 'typeorm';
+import session from 'express-session';
+import connectRedis from 'connect-redis';
+import { redis } from './redis';
+import cors from 'cors';
+import { createSchema } from './utils/createSchema';
+import queryComplexity, { fieldConfigEstimator, simpleEstimator } from 'graphql-query-complexity';
 
 const main = async () => {
   await createConnection();
@@ -15,6 +16,21 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema,
     context: ({ req, res }: any) => ({ req, res }),
+    // validationRules: [
+    //   queryComplexity({
+    //     maximumComplexity: 8,
+    //     variables: {},
+    //     onComplete: (complexity: number) => {
+    //       console.log('Query Comlexity: ', complexity);
+    //     },
+    //     estimators: [
+    //       fieldConfigEstimator(),
+    //       simpleEstimator({
+    //         defaultComplexity: 1
+    //       })
+    //     ]
+    //   }) as any
+    // ]
   });
   const app = Express();
   const RedisStore = connectRedis(session);
@@ -22,28 +38,28 @@ const main = async () => {
   app.use(
     cors({
       credentials: true,
-      origin: "http://localhost:3000",
+      origin: 'http://localhost:3000'
     })
   );
   app.use(
     session({
       store: new RedisStore({
-        client: redis,
+        client: redis
       }),
-      name: "qid",
-      secret: "asdfadsfadsf",
+      name: 'qid',
+      secret: 'asdfadsfadsf',
       resave: false,
       saveUninitialized: false,
       cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
-      },
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 1000 * 60 * 60 * 24 * 7 * 365 // 7 years
+      }
     })
   );
   apolloServer.applyMiddleware({ app });
   app.listen(4000, () => {
-    console.log("Server is up and running on http://localhost:4000/graphql");
+    console.log('Server is up and running on http://localhost:4000/graphql');
   });
 };
 
